@@ -117,8 +117,8 @@ static const char cstrButtonTelemetryJson[] = "{\"%s\":\"%d\"}";
 
 
 static const char cstrJWTHeaderJson[] = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}";
-static char deviceId[] = "e2da7773-a7cd-44a0-85d7-43fe0654cb22";
-static const char key[24] = "123456781234567812345678";
+static char deviceId[200];
+static char key[200];
 
 // Set up a timer to return to main screen
 struct timespec gotoMainScreenPeriod = { 10, 0 };
@@ -593,8 +593,10 @@ static void ButtonTimerEventHandler(EventData* eventData)
 		if (newButtonAState == GPIO_Value_Low) {
 
 			Log_Debug("Button A pressed!\n");
-			
-			paintScreen(paintMessagesScreen);
+			// check if there is a message to show
+			if (strlen(oled_ms1) > 0) { 
+				paintScreen(paintMessagesScreen);
+			}
 			
 		}
 		else {
@@ -676,6 +678,10 @@ static void GotoMainScreenTimerEventHandler(EventData* eventData)
 /// </summary>
 int main(int argc, char *argv[])
 {
+	//
+	strcpy(deviceId, argv[2]);
+	Log_Debug("Device ID: %s\n", deviceId);
+	strcpy(key, argv[3]);
 	// Variable to help us send the version string up only once
 	bool networkConfigSent = false;
 	char ssid[128];
