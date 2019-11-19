@@ -1,8 +1,8 @@
 # I WAS THERE
 
 Securely prove that you have been to a site at a specific time with JSON Web Tokens (JWT) signed in QR format
-This appliaction creates signed JWTs in QR format and display them in an ink display
-
+This appliaction creates signed JWTs in QR format and display them in an ink display with an Azure Sphere Device:
+Azure Sphere MT3620 Starter Kit
 
 |Library   |Purpose  |
 |---------|---------|
@@ -15,11 +15,21 @@ This appliaction creates signed JWTs in QR format and display them in an ink dis
 
  This sample requires the following hardware:
 
-- AVNET Azure Sphere MT3620 Kit board
+- AVNET Azure Sphere MT3620 Starter Kit
 - WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
 - Jumper wires to connect the boards.
 
+### AVNET Azure Sphere MT3620 Starter Kit
+
+The Avnet Azure Sphere MT3620 Starter Kit supports rapid prototyping of highly secure, end-to-end IoT implementations using Microsoft’s Azure Sphere. The small form-factor carrier board includes a production-ready MT3620 Sphere module with Wi-Fi connectivity, along with multiple expansion interfaces for easy integration of sensors, displays, motors, relays, and more. 
+
+https://www.element14.com/community/community/designcenter/azure-sphere-starter-kits
+
+### WolfSSL
+
 https://github.com/wolfSSL/wolfssl
+
+### WaveShare 1.54inch e-Paper V2 e-Paper Display
 
 WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
 
