@@ -38,6 +38,11 @@
 // | Data / ConfigPWM | GPIO_0    | D / C | 16   | PWM   |	
 // | Busy indicator   | GPIO_2    | BSY   | 15   | INT   |
 //========================================================
+
+// Reed Switch
+// DEFINE REED_SWITCH_INCLUDED in build_options.h
+// 3.3v  ---> RESISTOR 4K7 ----> GPIO_42 --> REED SWITCH --> GND
+//
 #include "applibs_versions.h"
 #include <errno.h>
 #include <signal.h>
@@ -79,10 +84,12 @@ extern int twinArraySize;
 extern IOTHUB_DEVICE_CLIENT_LL_HANDLE iothubClientHandle;
 
 // Array with messages from Azure
-extern uint8_t oled_ms1[CLOUD_MSG_SIZE];
-extern uint8_t oled_ms2[CLOUD_MSG_SIZE];
-extern uint8_t oled_ms3[CLOUD_MSG_SIZE];
-extern uint8_t oled_ms4[CLOUD_MSG_SIZE];
+extern uint8_t oled_ms1[CLOUD_MSG_SIZE] = "THANKS!";
+extern uint8_t oled_ms2[CLOUD_MSG_SIZE] = "RECYCLING";
+extern uint8_t oled_ms3[CLOUD_MSG_SIZE] = "GIVES";
+extern uint8_t oled_ms4[CLOUD_MSG_SIZE] = "QR PRIZES";
+
+// File descriptors - initialized to invalid value
 
 int userLedRedFd = -1;
 int userLedGreenFd = -1;
@@ -91,6 +98,24 @@ int appLedFd = -1;
 int wifiLedFd = -1;
 int clickSocket1Relay1Fd = -1;
 int clickSocket1Relay2Fd = -1;
+
+static int epollFd = -1;
+static int epaperSpiDcFd = -1;
+static int epaperSpiBusyFd = -1;
+
+static int epaperSpiResetFd = -1;
+static int spiFd = -1;
+static int buttonPollTimerFd = -1;
+static int buttonAGpioFd = -1;
+static int buttonBGpioFd = -1;
+
+static int gotoMainScreenTimerFd = -1;
+
+
+#ifdef REED_SWITCH_INCLUDED
+static int reedSwitchFd = -1;
+static GPIO_Value_Type reedSwitchState = GPIO_Value_Low;
+#endif
 
 #define BUFFER_SIZE 2048
 
@@ -110,10 +135,10 @@ int clickSocket1Relay2Fd = -1;
 //sensitive string.
 
 // Define the Json string format for the JSON WEB TOKEN
-static const char cstrJWTPayloadJson[] = "{\"jti\":\"%s-%08x-%08x\",\"iat\":%d}";
+const char cstrJWTPayloadJson[] = "{\"jti\":\"%s-%08x-%08x\",\"iat\":%d}";
 
 // Define the Json string format for the button press data
-static const char cstrButtonTelemetryJson[] = "{\"%s\":\"%d\"}";
+const char cstrButtonTelemetryJson[] = "{\"%s\":\"%d\"}";
 
 
 static const char cstrJWTHeaderJson[] = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}";
@@ -141,18 +166,6 @@ static void ButtonTimerEventHandler(EventData* eventData);
 static void GotoMainScreenTimerEventHandler(EventData* eventData);
 
 
-// File descriptors - initialized to invalid value
-static int epollFd = -1;
-static int epaperSpiDcFd = -1;
-static int epaperSpiBusyFd = -1;
-//static int epaperCsFd = -1;
-static int epaperSpiResetFd = -1;
-static int spiFd = -1;
-static int buttonPollTimerFd = -1;
-static int buttonAGpioFd = -1;
-static int buttonBGpioFd = -1;
-
-static int gotoMainScreenTimerFd = -1;
 // Button state variables, initilize them to button not-pressed (High)
 static GPIO_Value_Type buttonAState = GPIO_Value_High;
 static GPIO_Value_Type buttonBState = GPIO_Value_High;
@@ -221,7 +234,13 @@ static time_t getUnixTime(void) {
 ///     Paint idle screen. Asks for pressing A Button
 /// </summary>
 int paintIdleScreen(void) {
+#ifdef REED_SWITCH_INCLUDED
+	Paint_DrawBitMap(gImage_qrcycleHead);
+#endif // REED_SWITCH_INCLUDED
+#ifndef REED_SWITCH_INCLUDED
 	Paint_DrawBitMap(pressA_image);
+#endif // !REED_SWITCH_INCLUDED
+	
 	return 0;
 }
 
@@ -449,6 +468,18 @@ static int InitPeripheralsAndHandlers(void)
 		Log_Debug("ERROR: Could not open button A GPIO: %s (%d).\n", strerror(errno), errno);
 		return -1;
 	}
+
+#ifdef REED_SWITCH_INCLUDED
+	// Open reed sensor GPIO as input
+	Log_Debug("Opening Reed Switch GPIO as input.\n");
+	reedSwitchFd = GPIO_OpenAsInput(MT3620_GPIO42);
+	if (reedSwitchFd < 0) {
+		Log_Debug("ERROR: Could not open Reed Switch GPIO: %s (%d).\n", strerror(errno), errno);
+		return -1;
+	}
+
+#endif // REED_SWITCH_INCLUDED
+
 	// Open button B GPIO as input
 	Log_Debug("Opening Starter Kit Button B as input.\n");
 	buttonBGpioFd = GPIO_OpenAsInput(MT3620_RDB_BUTTON_B);
@@ -578,9 +609,45 @@ static void ButtonTimerEventHandler(EventData* eventData)
 		return;
 	}
 
+	int result;
+
+#ifdef REED_SWITCH_INCLUDED
+	// Check for reed switch open
+	GPIO_Value_Type newReedSwitchState;
+	result = GPIO_GetValue(reedSwitchFd, &newReedSwitchState);
+	if (result != 0) {
+		Log_Debug("ERROR: Could not read Reed Switch GPIO: %s (%d).\n", strerror(errno), errno);
+		terminationRequired = true;
+		return;
+	}
+	if (newReedSwitchState != reedSwitchState) {
+		if (reedSwitchState == GPIO_Value_Low) {
+
+			Log_Debug("Reed Switch opened!\n");
+			// check if there is a message to show
+			if (strlen(oled_ms1) > 0) {
+				paintScreen(paintMessagesScreen);
+			}
+
+		}
+		else {
+			Log_Debug("Reed Switch A closed!\n");
+			paintScreen(paintQrScreen);
+			sendTelemetryButtonA = true;
+			// Set timer to return to idle screen
+			SetTimerFdToSingleExpiry(gotoMainScreenTimerFd, &gotoMainScreenPeriod);
+		}
+		// Update the static variable to use next time we enter this routine
+		reedSwitchState = newReedSwitchState;
+	}
+
+
+#endif // REED_SWITCH_INCLUDED
+
+
 	// Check for button A press
 	GPIO_Value_Type newButtonAState;
-	int result = GPIO_GetValue(buttonAGpioFd, &newButtonAState);
+	result = GPIO_GetValue(buttonAGpioFd, &newButtonAState);
 	if (result != 0) {
 		Log_Debug("ERROR: Could not read button GPIO: %s (%d).\n", strerror(errno), errno);
 		terminationRequired = true;
@@ -601,7 +668,6 @@ static void ButtonTimerEventHandler(EventData* eventData)
 		}
 		else {
 			Log_Debug("Button A released!\n");
-			DEV_Delay_ms(4000);
 			paintScreen(paintQrScreen);
 			sendTelemetryButtonA = true;
 			// Set timer to return to idle screen
@@ -812,5 +878,14 @@ static void ClosePeripheralsAndHandlers(void)
 	CloseFdAndPrintError(buttonAGpioFd, "buttonA");
 	CloseFdAndPrintError(buttonBGpioFd, "buttonB");
 	CloseFdAndPrintError(gotoMainScreenTimerFd, "gotoMainScreen");
+	for (int i = 0; i < twinArraySize; i++) {
+		if (twinArray[i].twinGPIO != NO_GPIO_ASSOCIATED_WITH_TWIN) {
+			CloseFdAndPrintError(*twinArray[i].twinFd, "twinArray");
+		}
+	}
+#ifdef REED_SWITCH_INCLUDED
+	CloseFdAndPrintError(reedSwitchFd, "ReedSwitch");
+#endif // REED_SWITCH_INCLUDED
+
 
 }

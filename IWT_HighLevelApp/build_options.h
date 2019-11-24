@@ -23,4 +23,8 @@
 #warning "Building for IoT Hub Application"
 #endif 
 
+#define REED_SWITCH_INCLUDED
 
+#ifdef REED_SWITCH_INCLUDED
+#warning "Building for a reed switch or similar at GPIO42."
+#endif 
