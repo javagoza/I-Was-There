@@ -23,6 +23,7 @@
 #warning "Building for IoT Hub Application"
 #endif 
 
+// If your hardware includes a reed switch in GPIO_42 enable this define
 #define REED_SWITCH_INCLUDED
 
 #ifdef REED_SWITCH_INCLUDED
