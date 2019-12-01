@@ -1,22 +1,24 @@
-# I WAS THERE
+# I WAS THERE 
 
-## I WAS THERE... RECYCLING THE WASTE
+Repository for the projects submitted to:
+
+- Hackster.io Secure Everything with Azure Sphere with Avnet and Microsoft Contest <br>
+  https://www.hackster.io/contests/SecureEverything
+- Element 14 Sensing the World Challenge <br>
+  https://www.element14.com/community/docs/DOC-92683/l/sensing-the-world-challenge
+
+The challenge is powered by the Avnet Azure Sphere MT3620 Starter Kit, a solution for creating secured IoT edge devices with a ton of potential applications.
+
+## I WAS THERE... RECYCLING THE WASTE <img src="media/qrcycle.bmp" width="40" alt="logo">
 
 Securely prove that you have been to a site at a specific time with JSON Web Tokens (JWT) signed in QR format
 This appliaction creates signed JWTs in QR format and display them in an ink display with an Azure Sphere Device:
 Azure Sphere MT3620 Starter Kit
 
-## I WAS THERE... SENSING CITIZENS RECYCLING
+## I WAS THERE... SENSING CITIZENS RECYCLING <img src="media/PapeleraBateria.jpg" width="40" alt="logo">
 
 Remotely monitor the uses of recycling bins
 
-|Library   |Purpose  |
-|---------|---------|
-|log      |  Displays messages in the Visual Studio Device Output window during debugging  |
-|spi      |  Manages SPI interfaces |
-|i2c      |  Manages I2C interfaces |
-|wolfssl  |  Manages cryptography |
-|time     |  Manages clocks and time  |
 
 ## Prerequisites
 
@@ -26,6 +28,14 @@ Remotely monitor the uses of recycling bins
 - WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
 - SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
 - Jumper wires to connect the boards.
+
+|Library   |Purpose  |
+|---------|---------|
+|log      |  Displays messages in the Visual Studio Device Output window during debugging  |
+|spi      |  Manages SPI interfaces |
+|i2c      |  Manages I2C interfaces |
+|wolfssl  |  Manages cryptography |
+|time     |  Manages clocks and time  |
 
 **Note**
 You can configure hardware included in [IWT_HighLevelApp/build_options.h](IWT_HighLevelApp/build_options.h)
