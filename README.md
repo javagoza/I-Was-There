@@ -110,6 +110,9 @@ Using a SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
 |I2C Data SDA2    |GPIO_38    |SDA2   |11   | SDA   |	
 |I2C SCL          |GPIO_37    |SCL2   |12   | SCL   |	
 
+## Schematics
+
+<img src="media/IWT-Sketch_bb_rs_ps.png" width="600" alt="schematics">
 
 ##  Format of the tokens
 
