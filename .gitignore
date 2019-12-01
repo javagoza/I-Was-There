@@ -261,7 +261,7 @@ __pycache__/
 *.pyc
 IWT_HighLevelApp/wolfssl/
 ARM/
-media/
+
 
 ctaocrypt/src/src/
 *.swp
