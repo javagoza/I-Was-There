@@ -252,30 +252,33 @@ int paintIdleScreen(void) {
 /// </summary>
 int paintBinBatteryScreen(void) {
 #ifdef VCNL4040_PROXIMITY_INCLUDED
-	int16_t distance = proximity_get();
-	distance = proximity_get();
+	int16_t distance = vcnl4040_getProximity();
+	distance = vcnl4040_getProximity();
 	Log_Debug("Distance: (%d).\n", distance);
 	int level;
-	if (distance <= 1) {
-		level = 1;
-	}
-	else if (distance > 1 && distance <= 10) {
-		level = 2;
-	}
-	else if (distance > 10 && distance <= 20) {
-		level = 3;
-	}
-	else if (distance > 20 && distance <= 40) {
-		level = 4;
-	}
-	else if (distance > 40 && distance <= 80) {
+	if (distance <= 1) { // full
 		level = 5;
 	}
+	else if (distance > 1 && distance <= 10) {
+		level = 4;
+	}
+	else if (distance > 10 && distance <= 80) {
+		level = 3;
+	}
+	else if (distance > 80 && distance <= 120) { // full
+		level = 2;
+	}
+	else if (distance > 120 && distance <= 200) { // full
+		level = 1;
+	}
+	else if (distance > 200) { // empty
+		level = 0;
+	}
 	Paint_DrawBitMap(gImage_BinBattery);
-	int xorigin = 65;
-	int xend = 200 - xorigin;
+	const int xorigin = 65;
+	const int xend = EPD_WIDTH - xorigin;
 	for (int i = 0; i < 5; i++) {
-		Paint_DrawRectangle(xorigin, 80 + i * 16, xend, 80 + i * 16 +  12, BLACK, i> level? DRAW_FILL_FULL: DRAW_FILL_EMPTY, DOT_PIXEL_1X1);
+		Paint_DrawRectangle(xorigin, 80 + i * 16, xend, 80 + i * 16 +  12, BLACK, level - i > 0 ? DRAW_FILL_EMPTY : DRAW_FILL_FULL, DOT_PIXEL_1X1);
 	}
 #endif // VCNL4040_PROXIMITY_INCLUDED
 
@@ -631,10 +634,10 @@ static int InitPeripheralsAndHandlers(void)
 	AzureIoT_SetDeviceTwinUpdateCallback(&deviceTwinChangedHandler);
 
 #ifdef VCNL4040_PROXIMITY_INCLUDED
-	if (proximity_init() == -1) {
+	if (vcnl4040_begin(VCNL4040_ISU) == -1) {
 		return -1;
 	}
-	int16_t distance = proximity_get();
+	int16_t distance = vcnl4040_getProximity();
 	Log_Debug("Distance: (%d).\n", distance);
 #endif
 
@@ -748,7 +751,7 @@ static void ButtonTimerEventHandler(EventData* eventData)
 	if (newButtonBState != buttonBState) {
 		if (newButtonBState == GPIO_Value_Low) {
 #ifdef VCNL4040_PROXIMITY_INCLUDED
-			int16_t distance = proximity_get();
+			int16_t distance = vcnl4040_getProximity();
 			Log_Debug("Distance: (%d).\n", distance);
 
 #endif // VCNL4040_PROXIMITY_INCLUDED
@@ -951,7 +954,7 @@ static void ClosePeripheralsAndHandlers(void)
 #endif // REED_SWITCH_INCLUDED
 
 #ifdef VCNL4040_PROXIMITY_INCLUDED
-	closeI2c();
+	vcnl4040_closeI2c();
 #endif
 
 

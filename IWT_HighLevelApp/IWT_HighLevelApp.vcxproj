@@ -83,6 +83,7 @@
     <ClInclude Include="qr\qrcodegen.h" />
     <ClInclude Include="user_settings.h" />
     <ClInclude Include="vcnl4040.h" />
+    <ClInclude Include="vcnl4040_hardware.h" />
     <UpToDateCheckInput Include="app_manifest.json" />
     <ClInclude Include="applibs_versions.h" />
   </ItemGroup>

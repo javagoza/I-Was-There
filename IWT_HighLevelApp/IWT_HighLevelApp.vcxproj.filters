@@ -138,6 +138,9 @@
     <ClInclude Include="deviceTwin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vcnl4040_hardware.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="vcnl4040.h">
       <Filter>Header Files</Filter>
     </ClInclude>
