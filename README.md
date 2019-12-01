@@ -1,13 +1,20 @@
 # I WAS THERE
 
+## I WAS THERE... RECYCLING THE WASTE
+
 Securely prove that you have been to a site at a specific time with JSON Web Tokens (JWT) signed in QR format
 This appliaction creates signed JWTs in QR format and display them in an ink display with an Azure Sphere Device:
 Azure Sphere MT3620 Starter Kit
+
+## I WAS THERE... SENSING CITIZENS RECYCLING
+
+Remotely monitor the uses of recycling bins
 
 |Library   |Purpose  |
 |---------|---------|
 |log      |  Displays messages in the Visual Studio Device Output window during debugging  |
 |spi      |  Manages SPI interfaces |
+|i2c      |  Manages I2C interfaces |
 |wolfssl  |  Manages cryptography |
 |time     |  Manages clocks and time  |
 
@@ -19,6 +26,9 @@ Azure Sphere MT3620 Starter Kit
 - WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
 - SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
 - Jumper wires to connect the boards.
+
+**Note**
+You can configure hardware included in [IWT_HighLevelApp/build_options.h](IWT_HighLevelApp/build_options.h)
 
 ### AVNET Azure Sphere MT3620 Starter Kit
 
@@ -36,6 +46,12 @@ WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
 
 https://www.waveshare.com/wiki/1.54inch_e-Paper_Module
 
+### SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
+
+https://www.sparkfun.com/products/15177
+
+https://www.vishay.com/docs/84307/designingvcnl4040.pdf
+
 
 ## To build and run
 
@@ -45,8 +61,44 @@ https://www.waveshare.com/wiki/1.54inch_e-Paper_Module
 1. Enable [application development](https://docs.microsoft.com/azure-sphere/quickstarts/qs-blink-application#prepare-your-device-for-development-and-debugging), if you have not already done so:
 
    `azsphere device prep-debug`
-1. Clone the repo and find the IWT_HighLevelApp sample in the SPI folder.
+1. Clone the repo and find the IWT_HighLevelApp.
+1. Clone the wolfSSL repo and copy the wolfSSL into the IWT_HighLevelApp sample in the IWT_HighLevelApp folder.
 1. In Visual Studio, open IWT_HighLevelApp.sln and press F5 to compile and build the solution and load it onto the device for debugging.
+
+
+## Connecting WaveShare 1.54inch e-Paper V2, SPI: 
+
+|NOTES |AVNET KIT |Pin | |Mikro Bus |
+|------|----------|----|-|----------|
+|Reset            |GPIO_16   |RST   |2   |RST   |
+|SPI chip select  |GPIO_34   |CS    |3   |CS    |
+|SPI clock        |GPIO_31   |SCK   |4   |SCK   |
+|SPI data input   |GPIO_32   |SDI   |6   |MOSI  |
+|Power supply     |3V3       |+3.3V |7   |3.3V  |
+|Ground	          |GND       |GND   |8   |GND   |
+|Data / ConfigPWM |GPIO_0    |D / C |16   |PWM   |	
+|Busy indicator   |GPIO_2    |BSY   |15   |INT   |
+
+## Connecting the Reed Switch: 
+
+Connect the Reed Switch to GPIO_42 and Ground with a pull-up resitor to 3.3v
+
+|NOTES |AVNET KIT |Pin | |Mikro Bus |
+|------|----------|----|-|----------|
+|Reed Switch      |GPIO_42   |AN    |2   |Pull-up Resistor \\ Reed Sensor   |
+|Power supply     |3V3       |+3.3V |7   |3.3V  |
+|Ground	          |GND       |GND   |8   |GND   |
+
+## Connecting VCNL4040 Proximity and Ambient Light Sensor, I2C:
+
+Using a SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
+
+|NOTES |AVNET KIT |Pin | |Mikro Bus |
+|------|----------|----|-|----------|
+|Power supply     |3V3        |+3.3V  |7    |3.3V  |
+|Ground	          |GND        |GND    |8    |GND   |
+|I2C Data SDA2    |GPIO_38    |SDA2   |11   | SDA   |	
+|I2C SCL          |GPIO_37    |SCL2   |12   | SCL   |	
 
 
 ##  Format of the tokens
@@ -97,40 +149,6 @@ uses multiple issuers, collisions MUST be prevented among values
 produced by different issuers as well.The "jti" claim can be used
 to prevent the JWT from being replayed.The "jti" value is a case-
 sensitive string.
-
-## Connecting WaveShare 1.54inch e-Paper V2, SPI: 
-
-|NOTES |AVNET KIT |Pin | |Mikro Bus |
-|------|----------|----|-|----------|
-|Reset            |GPIO_16   |RST   |2   |RST   |
-|SPI chip select  |GPIO_34   |CS    |3   |CS    |
-|SPI clock        |GPIO_31   |SCK   |4   |SCK   |
-|SPI data input   |GPIO_32   |SDI   |6   |MOSI  |
-|Power supply     |3V3       |+3.3V |7   |3.3V  |
-|Ground	          |GND       |GND   |8   |GND   |
-|Data / ConfigPWM |GPIO_0    |D / C |16   |PWM   |	
-|Busy indicator   |GPIO_2    |BSY   |15   |INT   |
-
-## Connecting the Reed Switch: 
-
-Connect the Reed Switch to GPIO_42 and Ground with a pull-up resitor to 3.3v
-
-|NOTES |AVNET KIT |Pin | |Mikro Bus |
-|------|----------|----|-|----------|
-|Reed Switch      |GPIO_42   |AN    |2   |Pull-up Resistor \\ Reed Sensor   |
-|Power supply     |3V3       |+3.3V |7   |3.3V  |
-|Ground	          |GND       |GND   |8   |GND   |
-
-## Connecting VCNL4040 Proximity and Ambient Light Sensor, I2C:
-
-Using a SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
-
-|NOTES |AVNET KIT |Pin | |Mikro Bus |
-|------|----------|----|-|----------|
-|Power supply     |3V3        |+3.3V  |7    |3.3V  |
-|Ground	          |GND        |GND    |8    |GND   |
-|I2C Data SDA2    |GPIO_38    |SDA2   |11   | SDA   |	
-|I2C SCL          |GPIO_37    |SCL2   |12   | SCL   |	
 
 ## License
 For details on license, see LICENSE.txt in this directory.
