@@ -75,6 +75,7 @@
 #include <azureiot/iothub_device_client_ll.h>
 #include "azure_iot_utilities.h"
 #include "connection_strings.h"
+#include "vcnl4040.h"
 
 
 
@@ -84,10 +85,10 @@ extern int twinArraySize;
 extern IOTHUB_DEVICE_CLIENT_LL_HANDLE iothubClientHandle;
 
 // Array with messages from Azure
-extern uint8_t oled_ms1[CLOUD_MSG_SIZE] = "THANKS!";
-extern uint8_t oled_ms2[CLOUD_MSG_SIZE] = "RECYCLING";
-extern uint8_t oled_ms3[CLOUD_MSG_SIZE] = "GIVES";
-extern uint8_t oled_ms4[CLOUD_MSG_SIZE] = "QR PRIZES";
+extern uint8_t oled_ms1[CLOUD_MSG_SIZE];//= "THANKS!";
+extern uint8_t oled_ms2[CLOUD_MSG_SIZE];// = "RECYCLING";
+extern uint8_t oled_ms3[CLOUD_MSG_SIZE];// = "GIVES";
+extern uint8_t oled_ms4[CLOUD_MSG_SIZE];// = "QR PRIZES";
 
 // File descriptors - initialized to invalid value
 
@@ -146,7 +147,7 @@ static char deviceId[200];
 static char key[200];
 
 // Set up a timer to return to main screen
-struct timespec gotoMainScreenPeriod = { 10, 0 };
+struct timespec gotoMainScreenPeriod = { 5, 0 };
 static const struct timespec nullPeriod = { 0, 0 };
 
 
@@ -235,12 +236,49 @@ static time_t getUnixTime(void) {
 /// </summary>
 int paintIdleScreen(void) {
 #ifdef REED_SWITCH_INCLUDED
+
 	Paint_DrawBitMap(gImage_qrcycleHead);
 #endif // REED_SWITCH_INCLUDED
+	
 #ifndef REED_SWITCH_INCLUDED
 	Paint_DrawBitMap(pressA_image);
 #endif // !REED_SWITCH_INCLUDED
 	
+	return 0;
+}
+
+/// <summary>
+///     Paint battery screen. Asks for pressing A Button
+/// </summary>
+int paintBinBatteryScreen(void) {
+#ifdef VCNL4040_PROXIMITY_INCLUDED
+	int16_t distance = proximity_get();
+	distance = proximity_get();
+	Log_Debug("Distance: (%d).\n", distance);
+	int level;
+	if (distance <= 1) {
+		level = 1;
+	}
+	else if (distance > 1 && distance <= 10) {
+		level = 2;
+	}
+	else if (distance > 10 && distance <= 20) {
+		level = 3;
+	}
+	else if (distance > 20 && distance <= 40) {
+		level = 4;
+	}
+	else if (distance > 40 && distance <= 80) {
+		level = 5;
+	}
+	Paint_DrawBitMap(gImage_BinBattery);
+	int xorigin = 65;
+	int xend = 200 - xorigin;
+	for (int i = 0; i < 5; i++) {
+		Paint_DrawRectangle(xorigin, 80 + i * 16, xend, 80 + i * 16 +  12, BLACK, i> level? DRAW_FILL_FULL: DRAW_FILL_EMPTY, DOT_PIXEL_1X1);
+	}
+#endif // VCNL4040_PROXIMITY_INCLUDED
+
 	return 0;
 }
 
@@ -480,6 +518,8 @@ static int InitPeripheralsAndHandlers(void)
 
 #endif // REED_SWITCH_INCLUDED
 
+
+
 	// Open button B GPIO as input
 	Log_Debug("Opening Starter Kit Button B as input.\n");
 	buttonBGpioFd = GPIO_OpenAsInput(MT3620_RDB_BUTTON_B);
@@ -590,6 +630,13 @@ static int InitPeripheralsAndHandlers(void)
 	// Tell the system about the callback function that gets called when we receive a device twin update message from Azure
 	AzureIoT_SetDeviceTwinUpdateCallback(&deviceTwinChangedHandler);
 
+#ifdef VCNL4040_PROXIMITY_INCLUDED
+	if (proximity_init() == -1) {
+		return -1;
+	}
+	int16_t distance = proximity_get();
+	Log_Debug("Distance: (%d).\n", distance);
+#endif
 
     return 0;
 }
@@ -611,6 +658,12 @@ static void ButtonTimerEventHandler(EventData* eventData)
 
 	int result;
 
+	//int16_t distance = proximity_get();
+	//Log_Debug("Distance: (%d).\n", distance);
+
+
+
+
 #ifdef REED_SWITCH_INCLUDED
 	// Check for reed switch open
 	GPIO_Value_Type newReedSwitchState;
@@ -628,6 +681,10 @@ static void ButtonTimerEventHandler(EventData* eventData)
 			if (strlen(oled_ms1) > 0) {
 				paintScreen(paintMessagesScreen);
 			}
+			else {
+				paintScreen(paintBinBatteryScreen);
+			}
+
 
 		}
 		else {
@@ -690,8 +747,14 @@ static void ButtonTimerEventHandler(EventData* eventData)
 	// The button has GPIO_Value_Low when pressed and GPIO_Value_High when released
 	if (newButtonBState != buttonBState) {
 		if (newButtonBState == GPIO_Value_Low) {
+#ifdef VCNL4040_PROXIMITY_INCLUDED
+			int16_t distance = proximity_get();
+			Log_Debug("Distance: (%d).\n", distance);
+
+#endif // VCNL4040_PROXIMITY_INCLUDED
 			Log_Debug("Button B pressed!\n");	
 			paintScreen(paintClockScreen);
+
 		}
 		else {
 			Log_Debug("Button B released!\n");
@@ -886,6 +949,10 @@ static void ClosePeripheralsAndHandlers(void)
 #ifdef REED_SWITCH_INCLUDED
 	CloseFdAndPrintError(reedSwitchFd, "ReedSwitch");
 #endif // REED_SWITCH_INCLUDED
+
+#ifdef VCNL4040_PROXIMITY_INCLUDED
+	closeI2c();
+#endif
 
 
 }

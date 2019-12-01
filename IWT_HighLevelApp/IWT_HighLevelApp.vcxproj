@@ -63,6 +63,7 @@
     <ClCompile Include="qr\qrcodegen.c" />
     <ClCompile Include="iwt_crypto.c" />
     <ClCompile Include="iwt_image.c" />
+    <ClCompile Include="vcnl4040.c" />
     <ClInclude Include="azure_iot_utilities.h" />
     <ClInclude Include="build_options.h" />
     <ClInclude Include="connection_strings.h" />
@@ -81,6 +82,7 @@
     <ClInclude Include="parson.h" />
     <ClInclude Include="qr\qrcodegen.h" />
     <ClInclude Include="user_settings.h" />
+    <ClInclude Include="vcnl4040.h" />
     <UpToDateCheckInput Include="app_manifest.json" />
     <ClInclude Include="applibs_versions.h" />
   </ItemGroup>

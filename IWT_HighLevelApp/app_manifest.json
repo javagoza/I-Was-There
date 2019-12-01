@@ -9,6 +9,7 @@
     "AllowedConnections": [ "iotc-af6384f0-6f64-48c4-9d69-29dc60197e2d.azure-devices.net" ],
     "Gpio": [ 0, 2, 16, 12, 13, 8, 9, 10, 4, 5, 42 ],
     "SpiMaster": [ "ISU1" ],
+    "I2cMaster": [ "ISU2" ],
     "WifiConfig": true,
     "NetworkConfig": false,
     "SystemTime": false

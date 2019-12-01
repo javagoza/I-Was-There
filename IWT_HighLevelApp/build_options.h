@@ -28,3 +28,9 @@
 #ifdef REED_SWITCH_INCLUDED
 #warning "Building for a reed switch or similar at GPIO42."
 #endif 
+
+#define VCNL4040_PROXIMITY_INCLUDED
+
+#ifdef VCNL4040_PROXIMITY_INCLUDED
+#warning "Building for a VCNL4040 sensor at ISU2."
+#endif 
