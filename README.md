@@ -17,6 +17,7 @@ Azure Sphere MT3620 Starter Kit
 
 - AVNET Azure Sphere MT3620 Starter Kit
 - WaveShare 1.54inch e-Paper V2, Active Matrix Electrophoretic Display (AMEPD)
+- SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
 - Jumper wires to connect the boards.
 
 ### AVNET Azure Sphere MT3620 Starter Kit
@@ -97,7 +98,7 @@ produced by different issuers as well.The "jti" claim can be used
 to prevent the JWT from being replayed.The "jti" value is a case-
 sensitive string.
 
-## Connecting WaveShare 1.54inch e-Paper V2: 
+## Connecting WaveShare 1.54inch e-Paper V2, SPI: 
 
 |NOTES |AVNET KIT |Pin | |Mikro Bus |
 |------|----------|----|-|----------|
@@ -110,7 +111,26 @@ sensitive string.
 |Data / ConfigPWM |GPIO_0    |D / C |16   |PWM   |	
 |Busy indicator   |GPIO_2    |BSY   |15   |INT   |
 
+## Connecting the Reed Switch: 
 
+Connect the Reed Switch to GPIO_42 and Ground with a pull-up resitor to 3.3v
+
+|NOTES |AVNET KIT |Pin | |Mikro Bus |
+|------|----------|----|-|----------|
+|Reed Switch      |GPIO_42   |AN    |2   |Pull-up Resistor \\ Reed Sensor   |
+|Power supply     |3V3       |+3.3V |7   |3.3V  |
+|Ground	          |GND       |GND   |8   |GND   |
+
+## Connecting VCNL4040 Proximity and Ambient Light Sensor, I2C:
+
+Using a SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)
+
+|NOTES |AVNET KIT |Pin | |Mikro Bus |
+|------|----------|----|-|----------|
+|Power supply     |3V3        |+3.3V  |7    |3.3V  |
+|Ground	          |GND        |GND    |8    |GND   |
+|I2C Data SDA2    |GPIO_38    |SDA2   |11   | SDA   |	
+|I2C SCL          |GPIO_37    |SCL2   |12   | SCL   |	
 
 ## License
 For details on license, see LICENSE.txt in this directory.
