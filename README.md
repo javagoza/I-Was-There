@@ -19,7 +19,9 @@ Hackster.io Secure Everything with Azure Sphere: [I WAS THERE... RECYCLING THE W
 
 ## I WAS THERE... SENSING CITIZENS RECYCLING <img src="media/PapeleraBateria.jpg" width="40" alt="logo">
 
-Remotely monitor the uses of recycling bins
+Remotely monitor the uses of recycling bins. Azure IoT Central
+
+Device Template: [Device Template](json/waste_bin.json)
 
 Element14 Sensing the World Challenge: [I WAS THERE... SENSING CITIZENS RECYCLING](https://www.element14.com/community/groups/azuresphere/blog/2019/11/28/i-was-here)
 
