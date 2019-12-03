@@ -15,9 +15,13 @@ Securely prove that you have been to a site at a specific time with JSON Web Tok
 This appliaction creates signed JWTs in QR format and display them in an ink display with an Azure Sphere Device:
 Azure Sphere MT3620 Starter Kit
 
+Hackster.io Secure Everything with Azure Sphere: [I WAS THERE... RECYCLING THE WASTE](https://www.hackster.io/javagoza/i-was-there-recycling-the-waste-fcc895)
+
 ## I WAS THERE... SENSING CITIZENS RECYCLING <img src="media/PapeleraBateria.jpg" width="40" alt="logo">
 
 Remotely monitor the uses of recycling bins
+
+Element14 Sensing the World Challenge: [I WAS THERE... SENSING CITIZENS RECYCLING](https://www.element14.com/community/groups/azuresphere/blog/2019/11/28/i-was-here)
 
 <p align="center"><img src="media/sensingcitizensazureiotcentral.png" width="600" alt="logo"></p>
 
