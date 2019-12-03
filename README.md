@@ -19,6 +19,7 @@ Azure Sphere MT3620 Starter Kit
 
 Remotely monitor the uses of recycling bins
 
+<p align="center"><img src="media/sensingcitizensazureiotcentral.png" width="600" alt="logo"></p>
 
 ## Prerequisites
 
