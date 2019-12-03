@@ -1,0 +1,240 @@
+{
+  "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_te:1",
+  "@type": "CapabilityModel",
+  "implements": [
+    {
+      "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_te:pzub_frj:1",
+      "@type": "InterfaceInstance",
+      "displayName": {
+        "en": "Waste Bin monitors"
+      },
+      "name": "Connected_Waste_Bin_7dd",
+      "schema": {
+        "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:1",
+        "@type": "Interface",
+        "displayName": {
+          "en": "Waste Bin monitors"
+        },
+        "contents": [
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:FillLevel:1",
+            "@type": "Telemetry",
+            "displayName": {
+              "en": "Fill level"
+            },
+            "name": "FillLevel",
+            "schema": "integer"
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:Weight:1",
+            "@type": "Telemetry",
+            "displayName": {
+              "en": "Weight"
+            },
+            "name": "Weight",
+            "schema": "double"
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:Location:1",
+            "@type": [
+              "Property",
+              "SemanticType/Location"
+            ],
+            "displayName": {
+              "en": "Location"
+            },
+            "name": "Location",
+            "schema": "geopoint"
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:OdorMeter:1",
+            "@type": "Telemetry",
+            "displayName": {
+              "en": "Odor meter"
+            },
+            "name": "OdorMeter",
+            "schema": "integer"
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:BinType:1",
+            "@type": "Property",
+            "displayName": {
+              "en": "Bin type"
+            },
+            "name": "BinType",
+            "writable": true,
+            "schema": "string"
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:BinState:1",
+            "@type": [
+              "Telemetry",
+              "SemanticType/State"
+            ],
+            "displayName": {
+              "en": "Bin state"
+            },
+            "name": "BinState",
+            "schema": {
+              "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:BinState:xlzxxso3:1",
+              "@type": "Enum",
+              "valueSchema": "integer",
+              "enumValues": [
+                {
+                  "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:BinState:xlzxxso3:Empty:1",
+                  "@type": "EnumValue",
+                  "displayName": {
+                    "en": "Empty"
+                  },
+                  "enumValue": 0,
+                  "name": "Empty"
+                },
+                {
+                  "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:BinState:xlzxxso3:NonEmpty:1",
+                  "@type": "EnumValue",
+                  "displayName": {
+                    "en": "Non Empty"
+                  },
+                  "enumValue": 1,
+                  "name": "NonEmpty"
+                }
+              ]
+            }
+          },
+          {
+            "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_7dd:TiltSensor:1",
+            "@type": "Telemetry",
+            "displayName": {
+              "en": "Tilt sensor"
+            },
+            "name": "TiltSensor",
+            "schema": "double"
+          }
+        ]
+      }
+    },
+    {
+      "@id": "urn:connectedWasteManagement:Connected_Waste_Bin_te:ipjs68ct:1",
+      "@type": "InterfaceInstance",
+      "name": "Device_information_4jp",
+      "schema": {
+        "@id": "urn:azureiot:DeviceManagement:DeviceInformation:1",
+        "@type": "Interface",
+        "displayName": {
+          "en": "Device Information"
+        },
+        "contents": [
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:manufacturer:1",
+            "@type": "Property",
+            "description": {
+              "en": "Company name of the device manufacturer. This could be the same as the name of the original equipment manufacturer (OEM). Ex. Contoso."
+            },
+            "displayName": {
+              "en": "Manufacturer"
+            },
+            "name": "manufacturer",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:model:1",
+            "@type": "Property",
+            "description": {
+              "en": "Device model name or ID. Ex. Surface Book 2."
+            },
+            "displayName": {
+              "en": "Device model"
+            },
+            "name": "model",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:swVersion:1",
+            "@type": "Property",
+            "description": {
+              "en": "Version of the software on your device. This could be the version of your firmware. Ex. 1.3.45"
+            },
+            "displayName": {
+              "en": "Software version"
+            },
+            "name": "swVersion",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:osName:1",
+            "@type": "Property",
+            "description": {
+              "en": "Name of the operating system on the device. Ex. Windows 10 IoT Core."
+            },
+            "displayName": {
+              "en": "Operating system name"
+            },
+            "name": "osName",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:processorArchitecture:1",
+            "@type": "Property",
+            "description": {
+              "en": "Architecture of the processor on the device. Ex. x64 or ARM."
+            },
+            "displayName": {
+              "en": "Processor architecture"
+            },
+            "name": "processorArchitecture",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:processorManufacturer:1",
+            "@type": "Property",
+            "description": {
+              "en": "Name of the manufacturer of the processor on the device. Ex. Intel."
+            },
+            "displayName": {
+              "en": "Processor manufacturer"
+            },
+            "name": "processorManufacturer",
+            "schema": "string"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:totalStorage:1",
+            "@type": "Property",
+            "description": {
+              "en": "Total available storage on the device in kilobytes. Ex. 2048000 kilobytes."
+            },
+            "displayName": {
+              "en": "Total storage"
+            },
+            "name": "totalStorage",
+            "displayUnit": {
+              "en": "kilobytes"
+            },
+            "schema": "long"
+          },
+          {
+            "@id": "urn:azureiot:DeviceManagement:DeviceInformation:totalMemory:1",
+            "@type": "Property",
+            "description": {
+              "en": "Total available memory on the device in kilobytes. Ex. 256000 kilobytes."
+            },
+            "displayName": {
+              "en": "Total memory"
+            },
+            "name": "totalMemory",
+            "displayUnit": {
+              "en": "kilobytes"
+            },
+            "schema": "long"
+          }
+        ]
+      }
+    }
+  ],
+  "displayName": {
+    "en": "Connected Waste Bin"
+  },
+  "contents": [],
+  "@context": [
+    "http://azureiot.com/v1/contexts/IoTModel.json"
+  ]
+}
